@@ -1,11 +1,4 @@
-const year = 2024
-function isLeapYear(year) {
-  if ((year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0)) {
-    return `${year} is a leap year.`
-  } else {
-    return `${year} is not a leap year.`
-  }
+function convertCtoF(temp){
+  return temp * (9/5) + 32
 }
-
-const result = isLeapYear(year)
-console.log(result)
+console.log(convertCtoF(23))
