@@ -1,41 +1,57 @@
-console.log("Grocery shopping list");
+const lunches = [];
 
-const shoppingList = [];
 
-console.log("It will be nice to have some fruit to eat.");
-
-shoppingList.push("Apples");
-
-function getShoppingListMsg(arr) {
-  return `Current Shopping List: ${arr}`;
+function addLunchToEnd(arr, str) {
+  arr.push(str);
+  console.log(`${str} added to the end of the lunch menu.`);
+  return arr;
 }
 
-console.log(getShoppingListMsg(shoppingList));
+function addLunchToStart(arr, str) {
+  arr.unshift(str);
+  console.log(`${str} added to the start of the lunch menu.`);
+  return arr;
+}
 
-shoppingList.push("Grapes");
-console.log(getShoppingListMsg(shoppingList));
+function removeLastLunch(arr) {
+  if (arr.length === 0) {
+    console.log("No lunches to remove.");
+    return arr;
+  }
 
-console.log("It looks like we need to get some cooking oil.");
+  const removed = arr.pop();
+  console.log(`${removed} removed from the end of the lunch menu.`);
+  return arr;
+}
 
-shoppingList.unshift("Vegetable Oil");
-console.log(getShoppingListMsg(shoppingList));
+function removeFirstLunch(arr) {
+  if (arr.length === 0) {
+    console.log("No lunches to remove.");
+    return arr;
+  }
 
-shoppingList.push("Popcorn", "Beef Jerky", "Potato Chips");
-console.log(getShoppingListMsg(shoppingList));
+  const removed = arr.shift();
+  console.log(`${removed} removed from the start of the lunch menu.`);
+  return arr;
+}
 
-console.log("This looks like too much junk food.");
+function getRandomLunch(arr) {
+  if (arr.length === 0) {
+    console.log("No lunches available.");
+    return arr;
+  }
 
-shoppingList.pop();
-console.log(getShoppingListMsg(shoppingList));
+  const randomItem = arr[Math.floor(Math.random() * arr.length)];
+  console.log(`Randomly selected lunch: ${randomItem}`);
+  return arr;
+}
 
-console.log("It might be nice to get a dessert.");
+function showLunchMenu(arr) {
+  if (arr.length === 0) {
+    console.log("The menu is empty.");
+    return arr;
+  }
 
-shoppingList.unshift("Chocolate Cake");
-console.log(getShoppingListMsg(shoppingList));
-
-console.log("On second thought, maybe we should be more health conscious.");
-
-shoppingList.shift();
-shoppingList[0] = "Canola Oil";
-
-console.log(getShoppingListMsg(shoppingList))
+  console.log(`Menu items: ${arr.join(", ")}`);
+  return arr;
+}
