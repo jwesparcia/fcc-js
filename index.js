@@ -1,57 +1,22 @@
-const lunches = [];
+const names = ["Hole-in-one!", "Eagle", "Birdie", "Par", "Bogey", "Double Bogey", "Go Home!"];
 
-
-function addLunchToEnd(arr, str) {
-  arr.push(str);
-  console.log(`${str} added to the end of the lunch menu.`);
-  return arr;
-}
-
-function addLunchToStart(arr, str) {
-  arr.unshift(str);
-  console.log(`${str} added to the start of the lunch menu.`);
-  return arr;
-}
-
-function removeLastLunch(arr) {
-  if (arr.length === 0) {
-    console.log("No lunches to remove.");
-    return arr;
+function golfScore(par,strokes) {
+  if (strokes === 1) {
+    return names[0]
+  } else if (strokes <= par - 2) {
+    return names[1]
+  } else if (strokes === par -1){
+    return names[2]
+  }else if (strokes === par) {
+    return names[3]
+  }else if (strokes === par + 1){
+    return names[4]
+  }else if (strokes === par + 2) {
+    return names[5]
+  }else if (strokes >= par + 3){
+    return names[6]
   }
 
-  const removed = arr.pop();
-  console.log(`${removed} removed from the end of the lunch menu.`);
-  return arr;
 }
 
-function removeFirstLunch(arr) {
-  if (arr.length === 0) {
-    console.log("No lunches to remove.");
-    return arr;
-  }
-
-  const removed = arr.shift();
-  console.log(`${removed} removed from the start of the lunch menu.`);
-  return arr;
-}
-
-function getRandomLunch(arr) {
-  if (arr.length === 0) {
-    console.log("No lunches available.");
-    return arr;
-  }
-
-  const randomItem = arr[Math.floor(Math.random() * arr.length)];
-  console.log(`Randomly selected lunch: ${randomItem}`);
-  return arr;
-}
-
-function showLunchMenu(arr) {
-  if (arr.length === 0) {
-    console.log("The menu is empty.");
-    return arr;
-  }
-
-  console.log(`Menu items: ${arr.join(", ")}`);
-  return arr;
-}
+console.log(golfScore(3,3))
