@@ -1,22 +1,17 @@
-const names = ["Hole-in-one!", "Eagle", "Birdie", "Par", "Bogey", "Double Bogey", "Go Home!"];
+const firstResult = 5 + 10;
+console.log(`5 + 10 = ${firstResult}`);
 
-function golfScore(par,strokes) {
-  if (strokes === 1) {
-    return names[0]
-  } else if (strokes <= par - 2) {
-    return names[1]
-  } else if (strokes === par -1){
-    return names[2]
-  }else if (strokes === par) {
-    return names[3]
-  }else if (strokes === par + 1){
-    return names[4]
-  }else if (strokes === par + 2) {
-    return names[5]
-  }else if (strokes >= par + 3){
-    return names[6]
-  }
+const secondResult = 8 - 5;
+console.log(`8 - 5 = ${secondResult}`);
 
-}
+const thirdResult = 1 + 5;
+console.log(`1 + 5 = ${thirdResult}`);
 
-console.log(golfScore(3,3))
+const fourthResult = 0 + 8;
+console.log(`0 + 8 = ${fourthResult}`);
+
+const fifthResult = 10 * 2;
+console.log(`10 * 2 = ${fifthResult}`);
+
+const sixthResult = 0 + 22;
+console.log(`0 + 22 = ${sixthResult}`);
