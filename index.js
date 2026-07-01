@@ -1,17 +1,59 @@
-const firstResult = 5 + 10;
-console.log(`5 + 10 = ${firstResult}`);
+const tiger = {
+  species: "Tiger",
+  age: 5,
+  isEndangered: true
+};
 
-const secondResult = 8 - 5;
-console.log(`8 - 5 = ${secondResult}`);
+const elephant = {
+  species: "Elephant",
+  age: 10,
+  isEndangered: true
+};
 
-const thirdResult = 1 + 5;
-console.log(`1 + 5 = ${thirdResult}`);
+const getSpecies = (animal) => {
+  return animal.species;
+};
 
-const fourthResult = 0 + 8;
-console.log(`0 + 8 = ${fourthResult}`);
+console.log(getSpecies(tiger));
 
-const fifthResult = 10 * 2;
-console.log(`10 * 2 = ${fifthResult}`);
+const getAge = (animal) => {
+  return animal.age;
+};
 
-const sixthResult = 0 + 22;
-console.log(`0 + 22 = ${sixthResult}`);
+console.log(getAge(tiger));
+
+const addHabitat = (animal, habitat) => {
+  animal.habitat = habitat;
+  return animal;
+};
+
+console.log(addHabitat(tiger, "Rainforest"));
+
+const updateAge = (animal, newAge) => {
+  animal.age = newAge;
+  return animal;
+};
+
+console.log(updateAge(elephant, 12));
+
+const removeEndangeredStatus = (animal) => {
+  delete animal.isEndangered;
+  return animal;
+};
+
+console.log(removeEndangeredStatus(tiger));
+
+const hasHabitat = (animal) => {
+  return animal.hasOwnProperty("habitat");
+};
+
+console.log(hasHabitat(tiger));
+console.log(hasHabitat(elephant));
+
+const getProperty = (animal,propertyName) => {
+  return animal[propertyName]
+  
+}
+
+console.log(getProperty(tiger,"species"))
+console.log(getProperty(elephant,"age"))
