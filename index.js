@@ -1,48 +1,59 @@
+const tiger = {
+  species: "Tiger",
+  age: 5,
+  isEndangered: true
+};
 
-const users = [
-  { name: "Alice", age: 21 },
-  { name: "Bob", age: 25 },
-  { name: "Charlie", age: 19 },
-  { name: "Diana", age: 23 },
-  { name: "Ethan", age: 27 }
-];
+const elephant = {
+  species: "Elephant",
+  age: 10,
+  isEndangered: true
+};
 
-function calculateAverageAge(data) {
-  let total = 0;
+const getSpecies = (animal) => {
+  return animal.species;
+};
 
-  for (const user of data) {
-    total += user.age;
-  }
+console.log(getSpecies(tiger));
 
-  return total / data.length;
+const getAge = (animal) => {
+  return animal.age;
+};
+
+console.log(getAge(tiger));
+
+const addHabitat = (animal, habitat) => {
+  animal.habitat = habitat;
+  return animal;
+};
+
+console.log(addHabitat(tiger, "Rainforest"));
+
+const updateAge = (animal, newAge) => {
+  animal.age = newAge;
+  return animal;
+};
+
+console.log(updateAge(elephant, 12));
+
+const removeEndangeredStatus = (animal) => {
+  delete animal.isEndangered;
+  return animal;
+};
+
+console.log(removeEndangeredStatus(tiger));
+
+const hasHabitat = (animal) => {
+  return animal.hasOwnProperty("habitat");
+};
+
+console.log(hasHabitat(tiger));
+console.log(hasHabitat(elephant));
+
+function getProperty(animal, propertyName){
+  
+  return animal[propertyName]
 }
 
-function findOldest(data) {
-  return data.reduce((oldest, current) => {
-    return current.age > oldest.age ? current : oldest;
-  });
-}
-
-function capitalizeNames(data) {
-  return data.map(user => ({
-    ...user,
-    name: user.name.toUpperCase()
-  }));
-}
-
-const averageAge = calculateAverageAge(users);
-const oldestUser = findOldest(users);
-const updatedUsers = capitalizeNames(users);
-
-console.log("Average Age:", averageAge);
-console.log("Oldest User:", oldestUser);
-console.log("Updated Users:");
-updatedUsers.forEach(user => {
-  console.log(`${user.name} (${user.age})`);
-});
-
-const randomIndex = Math.floor(Math.random() * users.length);
-console.log("Random User:", users[randomIndex]);
-
-const adults = users.filter(user => user.age >= 21);
-console.log("Adult Count:", adults.length);
+console.log(getProperty(tiger,"species"))
+console.log(getProperty(elephant,"age"))
