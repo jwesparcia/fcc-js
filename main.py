@@ -1,29 +1,28 @@
-def caesar(text, shift, encrypt=True):
+full_dot = '●'
+empty_dot = '○'
 
-    if not isinstance(shift, int):
-        return 'Shift must be an integer value.'
+def create_character(name,strength,intelligence,charisma):
+    if not isinstance(name, str):
+        return 'The character name should be a string'
+    elif name == '':
+        return 'The character should have a name'
+    elif len(name) > 10:
+        return 'The character name is too long'
+    elif ' ' in name:
+        return 'The character name should not contain spaces'
+    elif not isinstance(strength, int) or not isinstance(intelligence, int) or not isinstance(charisma, int) :
+        return 'All stats should be integers'
+    elif strength <1 or intelligence <1 or charisma < 1:
+        return 'All stats should be no less than 1'
+    elif strength >4  or intelligence >4 or charisma > 4:
+        return 'All stats should be no more than 4'
+    elif strength + intelligence + charisma != 7:
+        return 'The character should start with 7 points'
+    else:
+        return (name+
+               '\nSTR' + ' ' + strength * full_dot + (10-strength)*empty_dot +
+               '\nINT' + ' ' + intelligence * full_dot + (10-intelligence)* empty_dot +
+               '\nCHA' + ' ' + charisma*full_dot + (10-charisma)* empty_dot)
 
-    if shift < 1 or shift > 25:
-        return 'Shift must be an integer between 1 and 25.'
-
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
-
-    if not encrypt:
-        shift = - shift
-    
-    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
-    translation_table = str.maketrans(alphabet + alphabet.upper(), shifted_alphabet + shifted_alphabet.upper())
-    encrypted_text = text.translate(translation_table)
-    return encrypted_text
-
-def encrypt(text, shift):
-    return caesar(text, shift)
-    
-def decrypt(text, shift):
-    return caesar(text, shift, encrypt=False)
-
-encrypted_text = 'Pbhentr vf sbhaq va hayvxryl cynprf.'
-print(encrypted_text)
-decrypted_text = decrypt(encrypted_text,13)
-
-print(decrypted_text)
+print(create_character('ren',2,2,3))
+             
