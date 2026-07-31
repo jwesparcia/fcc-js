@@ -1,58 +1,92 @@
-test_settings = {
-    "theme": "dark",
-    "volume": 75,
-    "language": "English",
-    "notifications": True,
-}
+def validate_isbn(isbn, length):
+    # Check the length of the ISBN
+    if len(isbn) != length:
+        print(f"ISBN-{length} code should be {length} digits long.")
+        return
 
-def add_setting(settings_dictionary, key_value_tuple):
-    key,value = key_value_tuple
-    key_lower = key.lower()
+    # Separate the main digits and check digit
+    main_digits = isbn[:-1]
+    given_check_digit = isbn[-1]
 
-    if isinstance(value,str):
-        value_lower= value.lower()
+    # Convert the main digits to integers
+    try:
+        main_digits_list = [int(digit) for digit in main_digits]
+    except ValueError:
+        print("Invalid character was found.")
+        return
+
+    # Calculate the expected check digit
+    if length == 10:
+        expected_check_digit = calculate_check_digit_10(main_digits_list)
     else:
-        value_lower = value
-    if key_lower in settings_dictionary:
-        return f'Setting \'{key_lower}\' already exists! Cannot add a new setting with this name.'
+        expected_check_digit = calculate_check_digit_13(main_digits_list)
+
+    # Compare check digits
+    if given_check_digit.upper() == expected_check_digit:
+        print("Valid ISBN Code.")
     else:
-        settings_dictionary [key_lower]=value_lower 
-        return f'Setting \'{key_lower}\' added with value \'{value_lower}\' successfully!'
+        print("Invalid ISBN Code.")
 
-def update_setting(settings_dictionary, key_value_tuple):
-    key,value = key_value_tuple
-    key_lower = key.lower()
-    if isinstance(value,str):
-        value_lower= value.lower()
+
+def calculate_check_digit_10(main_digits_list):
+    digits_sum = 0
+
+    for index, digit in enumerate(main_digits_list):
+        digits_sum += digit * (10 - index)
+
+    result = 11 - digits_sum % 11
+
+    if result == 11:
+        return "0"
+    elif result == 10:
+        return "X"
     else:
-        value_lower = value
-    if key_lower in settings_dictionary:
-        settings_dictionary[key_lower]=value_lower
-        return f'Setting \'{key_lower}\' updated to \'{value_lower}\' successfully!'
+        return str(result)
+
+
+def calculate_check_digit_13(main_digits_list):
+    digits_sum = 0
+
+    for index, digit in enumerate(main_digits_list):
+        if index % 2 == 0:
+            digits_sum += digit
+        else:
+            digits_sum += digit * 3
+
+    result = 10 - digits_sum % 10
+
+    if result == 10:
+        return "0"
     else:
-        return f'Setting \'{key_lower}\' does not exist! Cannot update a non-existing setting.'
+        return str(result)
 
 
-def delete_setting(settings_dictionary, key_value_tuple):
-    key = key_value_tuple
-    key_lower = key.lower()
+def main():
+    user_input = input("Enter ISBN and length: ")
 
-    if key_lower in settings_dictionary:
-        del settings_dictionary[key_lower]
-        return f'Setting \'{key_lower}\' deleted successfully!'
-    else:
-        return f'Setting not found!'
+    values = user_input.split(",")
 
-def view_settings(settings_view):
-    if not settings_view:
-        return f'No settings available.'
-    else:
-        result = "Current User Settings:\n"
-        for key, value in settings_view.items():
-            key_cap = key.capitalize()
-            result += f'{key_cap}: {value}\n'
-        
-        return result
+    # Validate comma-separated input
+    if len(values) != 2:
+        print("Enter comma-separated values.")
+        return
+
+    isbn = values[0].strip()
+
+    # Validate length input
+    try:
+        length = int(values[1].strip())
+    except ValueError:
+        print("Length must be a number.")
+        return
+
+    # Validate supported lengths
+    if length not in (10, 13):
+        print("Length should be 10 or 13.")
+        return
+
+    # Validate ISBN
+    validate_isbn(isbn, length)
 
 
-print(view_settings(test_settings))
+#main()
