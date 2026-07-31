@@ -1,90 +1,58 @@
-import re
+test_settings = {
+    "theme": "dark",
+    "volume": 75,
+    "language": "English",
+    "notifications": True,
+}
 
-medical_records = [
-    {
-        'patient_id': 'P1001',
-        'age': 34,
-        'gender': 'Female',
-        'diagnosis': 'Hypertension',
-        'medications': ['Lisinopril'],
-        'last_visit_id': 'V2301',
-    },
-    {
-        'patient_id': 'p1002',
-        'age': 47,
-        'gender': 'male',
-        'diagnosis': 'Type 2 Diabetes',
-        'medications': ['Metformin', 'Insulin'],
-        'last_visit_id': 'v2302',
-    },
-    {
-        'patient_id': 'P1003',
-        'age': 29,
-        'gender': 'female',
-        'diagnosis': 'Asthma',
-        'medications': ['Albuterol'],
-        'last_visit_id': 'v2303',
-    },
-    {
-        'patient_id': 'p1004',
-        'age': 56,
-        'gender': 'Male',
-        'diagnosis': 'Chronic Back Pain',
-        'medications': ['Ibuprofen', 'Physical Therapy'],
-        'last_visit_id': 'V2304',
-    }
-]
+def add_setting(settings_dictionary, key_value_tuple):
+    key,value = key_value_tuple
+    key_lower = key.lower()
 
-def find_invalid_records(
-    patient_id, age, gender, diagnosis, medications, last_visit_id
-):
-    constraints = {
-        'patient_id': isinstance(patient_id, str)
-        and re.fullmatch('p\d+', patient_id, re.IGNORECASE),
-        'age': isinstance(age, int) and age >= 18,
-        'gender': isinstance(gender, str) and gender.lower() in ('male', 'female'),
-        'diagnosis': isinstance(diagnosis, str) or diagnosis is None,
-        'medications': isinstance(medications, list)
-        and all([isinstance(i, str) for i in medications]),
-        'last_visit_id': isinstance(last_visit_id, str)
-        and re.fullmatch('v\d+', last_visit_id, re.IGNORECASE)
-    }
-    return [key for key, value in constraints.items() if not value]
+    if isinstance(value,str):
+        value_lower= value.lower()
+    else:
+        value_lower = value
+    if key_lower in settings_dictionary:
+        return f'Setting \'{key_lower}\' already exists! Cannot add a new setting with this name.'
+    else:
+        settings_dictionary [key_lower]=value_lower 
+        return f'Setting \'{key_lower}\' added with value \'{value_lower}\' successfully!'
 
-def validate(data):
-    is_sequence = isinstance(data, (list, tuple))
+def update_setting(settings_dictionary, key_value_tuple):
+    key,value = key_value_tuple
+    key_lower = key.lower()
+    if isinstance(value,str):
+        value_lower= value.lower()
+    else:
+        value_lower = value
+    if key_lower in settings_dictionary:
+        settings_dictionary[key_lower]=value_lower
+        return f'Setting \'{key_lower}\' updated to \'{value_lower}\' successfully!'
+    else:
+        return f'Setting \'{key_lower}\' does not exist! Cannot update a non-existing setting.'
 
-    if not is_sequence:
-        print('Invalid format: expected a list or tuple.')
-        return False
+
+def delete_setting(settings_dictionary, key_value_tuple):
+    key = key_value_tuple
+    key_lower = key.lower()
+
+    if key_lower in settings_dictionary:
+        del settings_dictionary[key_lower]
+        return f'Setting \'{key_lower}\' deleted successfully!'
+    else:
+        return f'Setting not found!'
+
+def view_settings(settings_view):
+    if not settings_view:
+        return f'No settings available.'
+    else:
+        result = "Current User Settings:\n"
+        for key, value in settings_view.items():
+            key_cap = key.capitalize()
+            result += f'{key_cap}: {value}\n'
         
-    is_invalid = False
-    key_set = set(
-        ['patient_id', 'age', 'gender', 'diagnosis', 'medications', 'last_visit_id']
-    )
+        return result
 
-    for index, dictionary in enumerate(data):
-        if not isinstance(dictionary, dict):
-            print(f'Invalid format: expected a dictionary at position {index}.')
-            is_invalid = True
-            continue
 
-        if set(dictionary.keys()) != key_set:
-            print(
-                f'Invalid format: {dictionary} at position {index} has missing and/or invalid keys.'
-            )
-            is_invalid = True
-            continue
-
-        invalid_records = find_invalid_records(**dictionary)
-        for key in invalid_records:
-            val = dictionary[key]
-            print(f'Unexpected format \'{key}: {val}\' at position {index}.')
-            is_invalid=True  
-                  
-    if is_invalid:
-        return False
-    print('Valid format.')
-    return True
-
-validate(medical_records)
+print(view_settings(test_settings))
