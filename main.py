@@ -1,29 +1,49 @@
-class Planet:
-    def __init__(self,name,planet_type,star):
-        if not isinstance(name,str) or not isinstance(planet_type,str) or not isinstance(star, str):
-            raise TypeError(f'name, planet type, and star must be strings')
-        if not name or not planet_type or not star:
-            raise ValueError(f'name, planet_type, and star must be non-empty strings')
+class Email:
+    def __init__(self, sender, receiver, subject, body):
+        self.sender = sender
+        self.receiver = receiver
+        self.subject = subject
+        self.body = body
+        self.read = False
 
-        self.name = name
-        self.planet_type = planet_type
-        self.star = star
-    
-    def orbit(self):
-        return f'{self.name} is orbiting around {self.star}...'
-    
+    def mark_as_read(self):
+        self.read = True
+
+    def display_full_email(self):
+        self.mark_as_read()
+        print('\n--- Email ---')
+        print(f'From: {self.sender.name}')
+        print(f'To: {self.receiver.name}')
+        print(f'Subject: {self.subject}')
+        print(f'Body: {self.body}')
+        print('------------\n')
+
     def __str__(self):
-        return f'Planet: {self.name} | Type: {self.planet_type} | Star: {self.star}'
+        status = 'Read' if self.read else 'Unread'
+        return f"[{status}] From: {self.sender.name} | Subject: {self.subject}"
+        
+class User:
+    def __init__(self, name):
+        self.name = name
+        self.inbox = Inbox()
 
-planet_1 = Planet('Earth', 'Terrestrial', 'Sun')
-planet_2 = Planet('Mars','Terrestrial','Sun')
-planet_3 = Planet('Saturn', 'Gas Giant', 'Sun')
+    def send_email(self, receiver, subject, body):
+        email = Email(sender=self, receiver=receiver, subject=subject, body=body)
+        receiver.inbox.receive_email(email)
 
-print(planet_1)
-print(planet_2)
-print(planet_3)
+class Inbox:
+    def __init__(self):
+        self.emails = []
 
+    def receive_email(self, email):
+        self.emails.append(email)
 
-print(planet_1.orbit())
-print(planet_2.orbit())
-print(planet_3.orbit())
+    def list_emails(self):
+        if not self.emails:
+            print('Your inbox is empty.\n')
+            return
+
+        print('\nYour Emails:')  
+
+        for email in enumeration(self.emails):
+            
