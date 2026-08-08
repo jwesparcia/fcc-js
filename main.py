@@ -1,97 +1,109 @@
-import datetime
-
-class Email:
-    def __init__(self, sender, receiver, subject, body):
-        self.sender = sender
-        self.receiver = receiver
-        self.subject = subject
-        self.body = body
-        self.timestamp = datetime.datetime.now()
-        self.read = False
-
-    def mark_as_read(self):
-        self.read = True
-
-    def display_full_email(self):
-        self.mark_as_read()
-        print('\n--- Email ---')
-        print(f'From: {self.sender.name}')
-        print(f'To: {self.receiver.name}')
-        print(f'Subject: {self.subject}')
-        print(f"Received: {self.timestamp.strftime('%Y-%m-%d %H:%M')}")
-        print(f'Body: {self.body}')
-        print('------------\n')
-
-    def __str__(self):
-        status = 'Read' if self.read else 'Unread'
-        return f"[{status}] From: {self.sender.name} | Subject: {self.subject} | Time: {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
-
-class User:
+class Category:
     def __init__(self, name):
         self.name = name
-        self.inbox = Inbox()
+        self.ledger = []
 
-    def send_email(self, receiver, subject, body):
-        email = Email(sender=self, receiver=receiver, subject=subject, body=body)
-        receiver.inbox.receive_email(email)
-        print(f'Email sent from {self.name} to {receiver.name}!\n')
+    def deposit(self, amount, description=''):
+        transaction = {
+            'amount': amount,
+            'description': description
+        }
+        self.ledger.append(transaction)
 
-    def check_inbox(self):
-        print(f"\n{self.name}'s Inbox:")
-        self.inbox.list_emails()
+    def get_balance(self):
+        balance = 0
+        for transaction in self.ledger:
+            balance += transaction['amount']
+        return balance
 
-    def read_email(self, index):
-        self.inbox.read_email(index)
+    def check_funds(self, amount):
+        if amount > self.get_balance():
+            return False
+        return True
 
-    def delete_email(self, index):
-        self.inbox.delete_email(index)
+    def withdraw(self, amount, description=''):
+        if self.check_funds(amount):
+            transaction = {
+                'amount': -amount,
+                'description': description
+            }
+            self.ledger.append(transaction)
+            return True
+        return False
 
-class Inbox:
-    def __init__(self):
-        self.emails = []
+    def transfer(self, amount, category):
+        if self.check_funds(amount):
+            self.withdraw(amount, f'Transfer to {category.name}')
+            category.deposit(amount, f'Transfer from {self.name}')
+            return True
+        return False
 
-    def receive_email(self, email):
-        self.emails.append(email)
+    def __str__(self):
+        output = self.name.center(30, '*') + '\n'
 
-    def list_emails(self):
-        if not self.emails:
-            print('Your inbox is empty.\n')
-            return
-        print('\nYour Emails:')
-        for i, email in enumerate(self.emails, start=1):
-            print(f'{i}. {email}')
+        for transaction in self.ledger:
+            description = transaction['description'][:23]
+            amount = f"{transaction['amount']:.2f}"
 
-    def read_email(self, index):
-        if not self.emails:
-            print('Inbox is empty.\n')
-            return
-        actual_index = index - 1
-        if actual_index < 0 or actual_index >= len(self.emails):
-            print('Invalid email number.\n')
-            return
-        self.emails[actual_index].display_full_email()
+            output += f"{description:<23}{amount:>7}\n"
 
-    def delete_email(self, index):
-        if not self.emails:
-            print('Inbox is empty.\n')
-            return
-        actual_index = index - 1
-        if actual_index < 0 or actual_index >= len(self.emails):
-            print('Invalid email number.\n')
-            return
-        del self.emails[actual_index]
-        print('Email deleted.\n')
+        output += f"Total: {self.get_balance():.2f}"
 
-def main():
-    tory = User('Tory')
-    ramy = User('Ramy')        
-    
-    tory.send_email(ramy, 'Hello', 'Hi Ramy, just saying hello!')
-    ramy.send_email(tory, 'Re: Hello', 'Hi Tory, hope you are fine.')
+        return output
 
-    ramy.check_inbox()
-    ramy.read_email(1)
-    ramy.delete_email(1)
-    ramy.check_inbox()   
-if __name__ == '__main__':
-    main()
+
+def create_spend_chart(categories):
+    # Calculate total spending for all categories
+    total_spent = 0
+    spent = []
+
+    for category in categories:
+        category_spent = 0
+
+        for transaction in category.ledger:
+            if transaction['amount'] < 0:
+                category_spent += -transaction['amount']
+
+        spent.append(category_spent)
+        total_spent += category_spent
+
+    # Calculate percentages
+    percentages = []
+
+    for amount in spent:
+        percentage = int((amount / total_spent) * 100)
+        percentage = (percentage // 10) * 10
+        percentages.append(percentage)
+
+    output = "Percentage spent by category\n"
+
+    # Create bars from 100 to 0
+    for level in range(100, -1, -10):
+        output += f"{level:>3}|"
+
+        for percentage in percentages:
+            if percentage >= level:
+                output += " o "
+            else:
+                output += "   "
+
+        output += " \n"
+
+    # Horizontal line
+    output += "    " + "-" * (len(categories) * 3 + 1) + "\n"
+
+    # Category names vertically
+    max_length = max(len(category.name) for category in categories)
+
+    for i in range(max_length):
+        output += "     "
+
+        for category in categories:
+            if i < len(category.name):
+                output += category.name[i] + "  "
+            else:
+                output += "   "
+
+        output += "\n"
+
+    return output.rstrip("\n")
