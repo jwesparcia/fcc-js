@@ -1,109 +1,65 @@
-class Category:
-    def __init__(self, name):
+class Employee:
+    _base_salaries = {
+        'trainee': 1000,
+        'junior': 2000,
+        'mid-level': 3000,
+        'senior': 4000,
+    }
+
+    def __init__(self, name, level):
         self.name = name
-        self.ledger = []
-
-    def deposit(self, amount, description=''):
-        transaction = {
-            'amount': amount,
-            'description': description
-        }
-        self.ledger.append(transaction)
-
-    def get_balance(self):
-        balance = 0
-        for transaction in self.ledger:
-            balance += transaction['amount']
-        return balance
-
-    def check_funds(self, amount):
-        if amount > self.get_balance():
-            return False
-        return True
-
-    def withdraw(self, amount, description=''):
-        if self.check_funds(amount):
-            transaction = {
-                'amount': -amount,
-                'description': description
-            }
-            self.ledger.append(transaction)
-            return True
-        return False
-
-    def transfer(self, amount, category):
-        if self.check_funds(amount):
-            self.withdraw(amount, f'Transfer to {category.name}')
-            category.deposit(amount, f'Transfer from {self.name}')
-            return True
-        return False
+        self.level = level
+        self.salary = Employee._base_salaries[level]
 
     def __str__(self):
-        output = self.name.center(30, '*') + '\n'
+        return f'{self.name}: {self.level}'
 
-        for transaction in self.ledger:
-            description = transaction['description'][:23]
-            amount = f"{transaction['amount']:.2f}"
+    def __repr__(self):
+        return f"Employee('{self.name}', '{self.level}')"
 
-            output += f"{description:<23}{amount:>7}\n"
+    @property
+    def name(self):
+        return self._name
 
-        output += f"Total: {self.get_balance():.2f}"
+    @name.setter
+    def name(self, new_name):
+        if not isinstance(new_name, str):
+            raise TypeError("'name' must be a string.")
+        self._name = new_name
+        print(f"'name' updated to '{self.name}'.")
 
-        return output
+    @property
+    def level(self):
+        return self._level
 
+    @level.setter
+    def level(self, new_level):
+        if not isinstance(new_level, str):
+            raise TypeError("'level' must be a string.")
+        if new_level not in Employee._base_salaries:
+            raise ValueError(f"Invalid value '{new_level}' for 'level' attribute.")
+        if hasattr(self, '_level') and new_level == self.level:
+            raise ValueError(f"'{self.level}' is already the selected level.")
+        if hasattr(self, '_level') and Employee._base_salaries[new_level] < Employee._base_salaries[self.level]:
+            raise ValueError("Cannot change to lower level.")
+        print(f"'{self.name}' promoted to '{new_level}'.")
+        self.salary = Employee._base_salaries[new_level]
+        self._level = new_level
 
-def create_spend_chart(categories):
-    # Calculate total spending for all categories
-    total_spent = 0
-    spent = []
+    @property
+    def salary(self):
+        return self._salary
 
-    for category in categories:
-        category_spent = 0
+    @salary.setter
+    def salary(self, new_salary):
+        if not isinstance(new_salary, (int, float)):
+            raise TypeError("'salary' must be a number.")
+        if hasattr(self, '_level') and new_salary < Employee._base_salaries[self.level]:
+            raise ValueError(f'Salary must be higher than minimum salary ${Employee._base_salaries[self.level]}.')
+        self._salary = new_salary
+        print(f'Salary updated to ${self.salary}.')
 
-        for transaction in category.ledger:
-            if transaction['amount'] < 0:
-                category_spent += -transaction['amount']
-
-        spent.append(category_spent)
-        total_spent += category_spent
-
-    # Calculate percentages
-    percentages = []
-
-    for amount in spent:
-        percentage = int((amount / total_spent) * 100)
-        percentage = (percentage // 10) * 10
-        percentages.append(percentage)
-
-    output = "Percentage spent by category\n"
-
-    # Create bars from 100 to 0
-    for level in range(100, -1, -10):
-        output += f"{level:>3}|"
-
-        for percentage in percentages:
-            if percentage >= level:
-                output += " o "
-            else:
-                output += "   "
-
-        output += " \n"
-
-    # Horizontal line
-    output += "    " + "-" * (len(categories) * 3 + 1) + "\n"
-
-    # Category names vertically
-    max_length = max(len(category.name) for category in categories)
-
-    for i in range(max_length):
-        output += "     "
-
-        for category in categories:
-            if i < len(category.name):
-                output += category.name[i] + "  "
-            else:
-                output += "   "
-
-        output += "\n"
-
-    return output.rstrip("\n")
+charlie_brown = Employee('Charlie Brown', 'trainee')
+print(charlie_brown)
+print(f'Base salary: ${charlie_brown.salary}')
+charlie_brown.level = 'junior'
